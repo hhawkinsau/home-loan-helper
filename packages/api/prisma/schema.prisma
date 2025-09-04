@@ -6,10 +6,80 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// User model with secure authentication
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Authentication methods
+  passkeys     Passkey[]
+  oauthAccounts OAuthAccount[]
+  sessions     Session[]
+
+  // Encrypted user data (add your app-specific fields here)
+  encryptedData String? // JSON blob of encrypted user data
+  
+  @@map("users")
+}
+
+// WebAuthn/Passkey credentials
+model Passkey {
+  id               String  @id @default(cuid())
+  userId           String
+  credentialId     String  @unique
+  publicKey        String
+  counter          BigInt
+  deviceType       String
+  backedUp         Boolean
+  transports       String? // JSON array of supported transports
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("passkeys")
+}
+
+// OAuth account linking (Google, GitHub, etc.)
+model OAuthAccount {
+  id           String @id @default(cuid())
+  userId       String
+  provider     String // "google", "github", etc.
+  providerAccountId String
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([provider, providerAccountId])
+  @@map("oauth_accounts")
+}
+
+// User sessions for JWT/cookie management
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@map("sessions")
 }
