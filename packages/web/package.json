@@ -1,0 +1,63 @@
+{
+  "name": "home-loan-helper",
+  "private": true,
+  "version": "0.0.1",
+  "description": "A tool to help people compare and understand home loans, built with React + TypeScript.",
+  "author": "Hudson Hawkins <hhawkins@example.com>",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hhawkinsau/home-loan-helper.git"
+  },
+  "keywords": ["react", "typescript", "home loan", "comparison", "finance"],
+  "homepage": "https://github.com/hhawkinsau/home-loan-helper#readme",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^3.26.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "framer-motion": "^12.23.12",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-hook-form": "^7.62.0",
+    "recharts": "^3.1.2",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^4.1.1",
+    "@eslint/js": "^9.34.0",
+    "@playwright/test": "^1.55.0",
+    "@storybook/addon-a11y": "^9.1.4",
+    "@storybook/addon-docs": "^9.1.4",
+    "@storybook/addon-onboarding": "^9.1.4",
+    "@storybook/addon-vitest": "^9.1.4",
+    "@storybook/react-vite": "^9.1.4",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react": "^5.0.0",
+    "@vitest/browser": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^9.34.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "eslint-plugin-storybook": "^9.1.4",
+    "globals": "^16.3.0",
+    "jiti": "^2.5.1",
+    "playwright": "^1.55.0",
+    "prettier": "^3.6.2",
+    "storybook": "^9.1.4",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.42.0",
+    "vite": "^7.1.2",
+    "vitest": "^3.2.4"
+  }
+}

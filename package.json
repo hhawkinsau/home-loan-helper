@@ -1,0 +1,7 @@
+{
+  "name": "home-loan-helper-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
