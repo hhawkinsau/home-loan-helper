@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,73 +7,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User model with secure authentication
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  username  String?  @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String          @id @default(cuid())
+  email     String?         @unique
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  passkeys  Passkey[]
+  sessions  ServerSession[]
 
-  // Authentication methods
-  passkeys     Passkey[]
-  oauthAccounts OAuthAccount[]
-  sessions     Session[]
-
-  // Encrypted user data (add your app-specific fields here)
-  encryptedData String? // JSON blob of encrypted user data
-  
   @@map("users")
 }
 
-// WebAuthn/Passkey credentials
-model Passkey {
-  id               String  @id @default(cuid())
-  userId           String
-  credentialId     String  @unique
-  publicKey        String
-  counter          BigInt
-  deviceType       String
-  backedUp         Boolean
-  transports       String? // JSON array of supported transports
-  
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  @@map("passkeys")
-}
-
-// OAuth account linking (Google, GitHub, etc.)
-model OAuthAccount {
-  id           String @id @default(cuid())
-  userId       String
-  provider     String // "google", "github", etc.
-  providerAccountId String
-  accessToken  String?
-  refreshToken String?
-  expiresAt    DateTime?
-  
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  @@unique([provider, providerAccountId])
-  @@map("oauth_accounts")
-}
-
-// User sessions for JWT/cookie management
-model Session {
+model ServerSession {
   id        String   @id @default(cuid())
-  userId    String
   token     String   @unique
+  userId    String
   expiresAt DateTime
-  
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
   createdAt DateTime @default(now())
-  
-  @@map("sessions")
+  lastUsed  DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("server_sessions")
+}
+
+model Passkey {
+  id           String   @id @default(cuid())
+  userId       String
+  credentialId String   @unique
+  publicKey    String
+  counter      BigInt
+  deviceType   String
+  backedUp     Boolean
+  transports   String?
+  createdAt    DateTime @default(now())
+  lastUsed     DateTime @default(now())
+  name         String?
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("passkeys")
 }

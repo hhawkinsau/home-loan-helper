@@ -1,6 +1,22 @@
 {
-  "name": "home-loan-helper-monorepo",
+  "name": "home-loan-helper",
   "private": true,
+  "version": "0.0.1",
+  "description": "A tool to help people compare and understand home loans, built with React + TypeScript.",
+  "author": "Hudson Hawkins <hhawkins@example.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hhawkinsau/home-loan-helper.git"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "home loan",
+    "comparison",
+    "finance"
+  ],
+  "homepage": "https://github.com/hhawkinsau/home-loan-helper#readme",
   "workspaces": [
     "packages/*"
   ]

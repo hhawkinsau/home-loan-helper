@@ -1,21 +1,15 @@
 {
-  "name": "home-loan-helper",
+  "name": "web",
   "private": true,
   "version": "0.0.1",
-  "description": "A tool to help people compare and understand home loans, built with React + TypeScript.",
-  "author": "Hudson Hawkins <hhawkins@example.com>",
+  "description": "Frontend web application for Home Loan Helper",
   "type": "module",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hhawkinsau/home-loan-helper.git"
-  },
-  "keywords": ["react", "typescript", "home loan", "comparison", "finance"],
-  "homepage": "https://github.com/hhawkinsau/home-loan-helper#readme",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "lint:full": "npm run lint && npm run type-check",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -24,10 +18,12 @@
     "@chakra-ui/react": "^3.26.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@simplewebauthn/browser": "^13.1.2",
     "framer-motion": "^12.23.12",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.62.0",
+    "react-icons": "^5.5.0",
     "recharts": "^3.1.2",
     "zod": "^4.1.5"
   },

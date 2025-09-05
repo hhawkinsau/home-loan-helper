@@ -1,5 +1,8 @@
 # Development Dockerfile
-FROM node:18-alpine
+FROM node:22-alpine
+
+# Create app user
+RUN addgroup -S app && adduser -S app -G app
 
 WORKDIR /app
 
@@ -14,6 +17,12 @@ RUN pnpm install
 
 # Copy source code
 COPY . .
+
+# Change ownership to app user
+RUN chown -R app:app /app
+
+# Switch to app user
+USER app
 
 # Generate Prisma client
 RUN pnpm db:generate

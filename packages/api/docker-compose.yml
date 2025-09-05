@@ -23,15 +23,8 @@ services:
     build: .
     ports:
       - "3001:3001"
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/home_loan_helper?schema=public
-      JWT_SECRET: development-jwt-secret-change-in-production
-      ENCRYPTION_KEY: development-encryption-key-32-bytes
-      NODE_ENV: development
-      FRONTEND_URL: http://localhost:5173
-      WEBAUTHN_RP_NAME: Home Loan Helper
-      WEBAUTHN_RP_ID: localhost
-      WEBAUTHN_ORIGIN: http://localhost:5173
+    env_file:
+      - .env  # Load from .env file (not committed to git)
     depends_on:
       postgres:
         condition: service_healthy

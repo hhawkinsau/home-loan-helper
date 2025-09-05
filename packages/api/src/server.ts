@@ -1,10 +1,13 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
-import jwt from '@fastify/jwt'
+import cookie from '@fastify/cookie'
+import helmet from '@fastify/helmet'
+import rateLimit from '@fastify/rate-limit'
 import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
 import { PrismaClient } from '@prisma/client'
 import dotenv from 'dotenv'
+import authRoutes from './routes/auth-simple.routes'
 
 // Load environment variables
 dotenv.config()
@@ -19,17 +22,40 @@ const fastify = Fastify({
   }
 })
 
-// Register plugins
+// Register security plugins
 async function registerPlugins() {
-  // CORS
+  // Security headers
+  await fastify.register(helmet, {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+      },
+    },
+  })
+
+  // Rate limiting
+  await fastify.register(rateLimit, {
+    max: 100, // 100 requests
+    timeWindow: '1 minute'
+  })
+
+  // CORS - locked to frontend origin
   await fastify.register(cors, {
     origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true
   })
 
-  // JWT
-  await fastify.register(jwt, {
-    secret: process.env.JWT_SECRET || 'fallback-secret-change-this'
+  // Cookies (HTTP-only, secure)
+  await fastify.register(cookie, {
+    secret: process.env.COOKIE_SECRET || 'your-secret-key-change-in-production',
+    parseOptions: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    }
   })
 
   // Swagger documentation
@@ -38,7 +64,7 @@ async function registerPlugins() {
       openapi: '3.0.0',
       info: {
         title: 'Home Loan Helper API',
-        description: 'Secure API for home loan calculations and user management',
+        description: 'Secure API for home loan calculations and passkey authentication',
         version: '1.0.0'
       },
       servers: [
@@ -46,7 +72,16 @@ async function registerPlugins() {
           url: `http://localhost:${process.env.PORT || 3001}`,
           description: 'Development server'
         }
-      ]
+      ],
+      components: {
+        securitySchemes: {
+          sessionCookie: {
+            type: 'apiKey',
+            in: 'cookie',
+            name: 'sessionToken'
+          }
+        }
+      }
     }
   })
 
@@ -59,17 +94,8 @@ async function registerPlugins() {
   })
 }
 
-// Health check endpoint
-fastify.get('/health', async (request, reply) => {
-  return { status: 'ok', timestamp: new Date().toISOString() }
-})
-
-// Auth routes (to be implemented)
-fastify.register(async function (fastify) {
-  fastify.get('/auth/status', async (request, reply) => {
-    return { message: 'Auth routes ready for implementation' }
-  })
-}, { prefix: '/api/v1' })
+// Register routes
+fastify.register(authRoutes, { prefix: '/api/v1' })
 
 // Start server
 const start = async () => {

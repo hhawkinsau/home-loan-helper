@@ -14,13 +14,19 @@ export default tseslint.config([
     files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,
-      tseslint.configs.recommended,
+      ...tseslint.configs.recommended,
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
     ],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+    },
+    rules: {
+      // Enable unused variable detection
+      '@typescript-eslint/no-unused-vars': 'error',
+      // Enable type checking rules that catch common issues
+      '@typescript-eslint/no-explicit-any': 'warn',
     },
   },
 ], storybook.configs["flat/recommended"]);
